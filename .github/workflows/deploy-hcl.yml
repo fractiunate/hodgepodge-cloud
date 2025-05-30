@@ -41,14 +41,25 @@ concurrency:
 
 jobs:
   hcl:
+    environment: ${{ format('{0}-{1}', inputs.project, inputs.stage) }}
     runs-on: ubuntu-latest
+    env:
+      backend_config_resource_group_name: ${{ secrets.BACKEND_CONFIG_RESOURCE_GROUP_NAME }}
+      backend_config_storage_account_name: ${{ secrets.BACKEND_CONFIG_STORAGE_ACCOUNT_NAME }}
+      backend_config_storage_container_name: ${{ secrets.BACKEND_CONFIG_STORAGE_CONTAINER_NAME || 'tfstates' }}
+      backend_config_key: ${{ format('{0}-{1}', inputs.project, inputs.stage) }}
     steps:
       - uses: actions/checkout@v4
       - uses: opentofu/setup-opentofu@v1
         with:
-          tofu_version: ${{ inputs.opentofu-version || '1.10.0' }}
+          tofu_version: ${{ inputs.opentofu-version || '1.10.0-beta' }}
       - name: OpenTofu Init
-        run: tofu init
+        run: |
+          tofu init  \
+            -backend-config="resource_group_name=${{ env.backend_config_resource_group_name }}" \
+            -backend-config="storage_account_name=${{ env.backend_config_storage_account_name }}" \
+            -backend-config="container_name=${{ env.backend_config_storage_container_name }}" \
+            -backend-config="key=${{ env.backend_config_key }}"
       - name: OpenTofu fmt
         id: fmt
         run: tofu fmt -check
@@ -58,4 +69,5 @@ jobs:
         run: tofu validate -no-color
       - name: OpenTofu Plan
         id: plan
-        run: tofu plan -no-color
+        run: tofu -chdir=projects/${{ inputs.project}} plan -no-color -var-file=${{ inputs.stage }}.tfvars -out=tfplan
+        
