@@ -48,11 +48,19 @@ jobs:
       backend_config_storage_account_name: ${{ secrets.BACKEND_CONFIG_STORAGE_ACCOUNT_NAME }}
       backend_config_storage_container_name: ${{ secrets.BACKEND_CONFIG_STORAGE_CONTAINER_NAME || 'tfstates' }}
       backend_config_key: ${{ format('{0}-{1}', inputs.project, inputs.stage) }}
+      arm_client_id: ${{ secrets.ARM_CLIENT_ID || vars.ARM_CLIENT_ID }}
+      arm_client_secret: ${{ secrets.ARM_CLIENT_SECRET || vars.ARM_CLIENT_SECRET }}
+      arm_tenant_id: ${{ secrets.ARM_TENANT_ID || vars.ARM_TENANT_ID }}
+      arm_subscription_id: ${{ secrets.ARM_SUBSCRIPTION_ID || vars.ARM_SUBSCRIPTION_ID }}
     steps:
       - uses: actions/checkout@v4
       - uses: opentofu/setup-opentofu@v1
         with:
           tofu_version: ${{ inputs.opentofu-version || '1.10.0-beta' }}
+      - id: az-login
+        name: az-login
+        shell: bash
+        run: az login --service-principal -u ${{ env.arm_client_id }} -p ${{ env.arm_client_secret }} --tenant ${{ env.arm_tenant_id }} && az account set -s ${{ env.arm_subscription_id }}
       - name: OpenTofu Init
         run: |
           tofu -chdir=projects/${{ inputs.project}} init \
