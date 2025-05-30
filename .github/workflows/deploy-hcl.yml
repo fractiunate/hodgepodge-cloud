@@ -1,0 +1,61 @@
+name: "Deploy: HCL Project"
+run-name: "${{ inputs.mode }} ${{ inputs.project }} in stage ${{ inputs.stage }} on branch ${{ github.ref }}"
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Plan or Deploy"
+        required: true
+        type: choice
+        options:
+          - "Plan"
+          - "Deploy"
+          - "Destroy"
+      safety-check:
+        description: "Enter delete to confirm destroy"
+        required: false
+        default: ""
+      opentofu-version:
+        description: "OpenTofu version to use"
+        required: false
+        default: "1.10.0"
+      project:
+        description: "Project name"
+        required: true
+        type: choice
+        options:
+          - "static-webhosting"
+      stage:
+        description: "Stage"
+        required: true
+        type: choice
+        default: "dev"
+        options:
+          - "dev"
+          - "prod"
+
+concurrency:
+  group: ${{ inputs.mode == 'Plan' && github.sha || format('{0}-{1}', inputs.project, inputs.stage) }}
+  cancel-in-progress: false
+
+jobs:
+  hcl:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: opentofu/setup-opentofu@v1
+        with:
+          tofu_version: ${{ inputs.opentofu-version || '1.10.0' }}
+      - name: OpenTofu Init
+        run: tofu init
+      - name: OpenTofu fmt
+        id: fmt
+        run: tofu fmt -check
+        continue-on-error: true
+      - name: OpenTofu Validate
+        id: validate
+        run: tofu validate -no-color
+      - name: OpenTofu Plan
+        id: plan
+        run: tofu plan -no-color
