@@ -75,7 +75,7 @@ jobs:
       - name: OpenTofu Plan
         id: plan
         run: |
-          tofu '-chdir=projects/${{ inputs.project}} \
+          tofu -chdir=projects/${{ inputs.project}} \
             $(echo "${{ inputs.mode }}" | tr '[:upper:]' '[:lower:]') \
             -no-color \
             -var-file=${{ inputs.stage }}.tfvars \
