@@ -79,4 +79,4 @@ jobs:
             $(echo "${{ inputs.mode }}" | tr '[:upper:]' '[:lower:]') \
             -no-color \
             -var-file=${{ inputs.stage }}.tfvars \
-            -out=tfplan ${{ ((inputs.mode == 'Destroy') || (inputs.mode == 'Apply')) && ' -auto-approve' || '' }}
+            ${{ ((inputs.mode == 'Destroy') || (inputs.mode == 'Apply')) && ' -auto-approve' || ' -out=tfplan' }}
