@@ -74,8 +74,9 @@ jobs:
         run: tofu validate -no-color
       - name: OpenTofu Plan
         id: plan
-        run: tofu -chdir=projects/${{ inputs.project}} \
-          $(echo "${{ inputs.mode }}" | tr '[:upper:]' '[:lower:]') \
-          -no-color \
-          -var-file=${{ inputs.stage }}.tfvars \
-          -out=tfplan ${{ ((inputs.mode == 'Destroy') || (inputs.destroy == 'Apply')) && ' -auto-approve' || '' }}
+        run: |
+          tofu '-chdir=projects/${{ inputs.project}} \
+            $(echo "${{ inputs.mode }}" | tr '[:upper:]' '[:lower:]') \
+            -no-color \
+            -var-file=${{ inputs.stage }}.tfvars \
+            -out=tfplan ${{ ((inputs.mode == 'Destroy') || (inputs.mode == 'Apply')) && ' -auto-approve' || '' }}
