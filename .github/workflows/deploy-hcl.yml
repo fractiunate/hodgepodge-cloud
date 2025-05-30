@@ -19,7 +19,7 @@ on:
       opentofu-version:
         description: "OpenTofu version to use"
         required: false
-        default: "1.10.0"
+        default: "1.10.0-beta1"
       project:
         description: "Project name"
         required: true
