@@ -69,5 +69,5 @@ jobs:
         run: tofu validate -no-color
       - name: OpenTofu Plan
         id: plan
-        run: tofu -chdir=projects/${{ inputs.project}} plan -no-color -var-file=${{ inputs.stage }}.tfvars -out=tfplan
+        run: tofu -chdir=projects/${{ inputs.project}} plan -no-color -var-file=projects/${{ inputs.project}}/${{ inputs.stage }}.tfvars -out=tfplan
         
