@@ -1,3 +1,8 @@
+## Requirements
+
+Service principal with `Owner` or `Contributor` and `User Access Administrator` Role.
+
+
 ## Sources
 
 - https://github.com/ThorstenHans/azure-container-apps-samples
