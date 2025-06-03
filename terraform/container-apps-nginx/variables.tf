@@ -16,3 +16,7 @@ variable "project" {
   description = "The name of the project for tagging purposes."
   default     = "container-apps"
 }
+
+variable "deploy_acr" {
+  default = false
+}

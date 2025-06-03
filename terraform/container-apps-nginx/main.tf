@@ -37,6 +37,7 @@ resource "azurerm_container_app_environment" "this" {
 }
 
 resource "azurerm_user_assigned_identity" "containerapp" {
+  count               = var.deploy_acr ? 1 : 0
   location            = var.location
   name                = "${var.stage}containerappnginxa${random_string.suffix.result}"
   resource_group_name = azurerm_resource_group.this.name
@@ -44,6 +45,7 @@ resource "azurerm_user_assigned_identity" "containerapp" {
 }
 
 resource "azurerm_container_registry" "acr" {
+  count               = var.deploy_acr ? 1 : 0
   name                = "${var.stage}containerappacr${random_string.suffix.result}"
   location            = var.location
   resource_group_name = azurerm_resource_group.this.name
@@ -54,9 +56,10 @@ resource "azurerm_container_registry" "acr" {
 }
 
 resource "azurerm_role_assignment" "containerapp" {
-  scope                = azurerm_container_registry.acr.id
+  count                = var.deploy_acr ? 1 : 0
+  scope                = azurerm_container_registry.acr[0].id
   role_definition_name = "acrpull"
-  principal_id         = azurerm_user_assigned_identity.containerapp.principal_id
+  principal_id         = azurerm_user_assigned_identity.containerapp[0].principal_id
   depends_on = [
     azurerm_user_assigned_identity.containerapp
   ]
@@ -144,8 +147,8 @@ resource "azurerm_container_app" "nginx_app" {
   }
 
   identity {
-    type         = "SystemAssigned, UserAssigned"
-    identity_ids = [azurerm_user_assigned_identity.containerapp.id]
+    type         = join(" ,", concat(["SystemAssigned"], (var.deploy_acr ? ["UserAssigned"] : [])))
+    identity_ids = var.deploy_acr ? [azurerm_user_assigned_identity.containerapp.id] : []
   }
 
   dynamic "ingress" {
