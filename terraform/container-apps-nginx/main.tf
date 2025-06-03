@@ -15,6 +15,9 @@ resource "azurerm_container_app_environment" "this" {
   location            = var.location
   resource_group_name = azurerm_resource_group.this.name
 
+  depends_on = [
+    azurerm_resource_provider_registration.app
+  ]
 
   # infrastructure_subnet_id           = var.container_app_subnet_id
   # internal_load_balancer_enabled = true
