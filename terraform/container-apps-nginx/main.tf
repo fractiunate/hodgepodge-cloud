@@ -13,7 +13,8 @@ resource "azurerm_resource_group" "this" {
 resource "azurerm_container_app_environment" "this" {
   name                = "${var.stage}-container-app-environment-${random_string.suffix.result}"
   location            = var.location
-  resource_group_name = var.resource_group_name
+  resource_group_name = azurerm_resource_group.this.name
+
 
   # infrastructure_subnet_id           = var.container_app_subnet_id
   # internal_load_balancer_enabled = true
@@ -35,14 +36,14 @@ resource "azurerm_container_app_environment" "this" {
 resource "azurerm_user_assigned_identity" "containerapp" {
   location            = var.location
   name                = "${var.stage}containerappnginxa${random_string.suffix.result}"
-  resource_group_name = var.resource_group_name
+  resource_group_name = azurerm_resource_group.this.name
   tags                = local.tags
 }
 
 resource "azurerm_container_registry" "acr" {
   name                = "${var.stage}containerappacr${random_string.suffix.result}"
   location            = var.location
-  resource_group_name = var.resource_group_name
+  resource_group_name = azurerm_resource_group.this.name
   sku                 = "Basic"
   admin_enabled       = true
   tags                = local.tags
@@ -61,7 +62,7 @@ resource "azurerm_role_assignment" "containerapp" {
 resource "azurerm_container_app" "nginx_app" {
   name                         = "${var.stage}-container-app-nginx-${random_string.suffix.result}"
   container_app_environment_id = azurerm_container_app_environment.this.id
-  resource_group_name          = var.resource_group_name
+  resource_group_name          = azurerm_resource_group.this.name
   revision_mode                = "Single"
 
   # workload_profile_name = "DedicatedE4"
