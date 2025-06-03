@@ -79,9 +79,10 @@ jobs:
           tofu -chdir=terraform/${{ inputs.project}} \
             $(echo "${{ inputs.mode }}" | tr '[:upper:]' '[:lower:]') \
             -no-color \
-            ${{ (inputs.mode == 'Plan' || inputs.mode == 'Plan -destroy') && ' -lock=false'}}
             -var-file=${{ inputs.stage }}.tfvars \
             ${{ ((inputs.mode == 'Destroy') || (inputs.mode == 'Apply')) && ' -auto-approve' || ' -out=tfplan' }}
+        
+            # ${{ (inputs.mode == 'Plan' || inputs.mode == 'Plan -destroy') && ' -lock=false' || ' '}}
       - name: "Plan to File"
         if: (inputs.mode == 'Plan' || inputs.mode == 'Plan -destroy')
         shell: bash
@@ -102,7 +103,7 @@ jobs:
                 if (typeof fileContentPlanOutput != 'undefined'){
                   const planOutput = fileContentPlanOutput.toString()
                   await core.summary
-                    .addHeading('OpenTofu Plan Summary').addEOL()
+                    .addHeading('OpenTofu plan summary (${{ inputs.project }})').addEOL()
                     // note: the additional second \n is a github bug.. (see: 20240109)
                     .addDetails("Click to expand", `\n\n~~~\n${planOutput}\n~~~\n`)
                     .addEOL().write();
