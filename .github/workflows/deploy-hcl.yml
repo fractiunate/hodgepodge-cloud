@@ -13,14 +13,6 @@ on:
           - "Apply"
           - "Plan -destroy"
           - "Destroy"
-      safety-check:
-        description: "Enter delete to confirm destroy"
-        required: false
-        default: ""
-      opentofu-version:
-        description: "OpenTofu version to use"
-        required: false
-        default: "1.10.0-beta1"
       project:
         description: "Project name"
         required: true
@@ -36,6 +28,14 @@ on:
         options:
           - "dev"
           - "prod"
+      opentofu-version:
+        description: "OpenTofu version to use"
+        required: false
+        default: "1.10.0-beta1"
+      safety-check:
+        description: "Enter delete to confirm destroy"
+        required: false
+        default: ""
 
 concurrency:
   group: ${{ inputs.mode == 'Plan' && github.sha || format('{0}-{1}', inputs.project, inputs.stage) }}
@@ -79,6 +79,7 @@ jobs:
           tofu -chdir=terraform/${{ inputs.project}} \
             $(echo "${{ inputs.mode }}" | tr '[:upper:]' '[:lower:]') \
             -no-color \
+            -input=false \
             -var-file=${{ inputs.stage }}.tfvars \
             ${{ ((inputs.mode == 'Destroy') || (inputs.mode == 'Apply')) && ' -auto-approve' || ' -out=tfplan' }}
         
