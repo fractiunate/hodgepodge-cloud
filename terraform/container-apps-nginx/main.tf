@@ -148,7 +148,7 @@ resource "azurerm_container_app" "nginx_app" {
 
   identity {
     type         = join(" ,", concat(["SystemAssigned"], (var.deploy_acr ? ["UserAssigned"] : [])))
-    identity_ids = var.deploy_acr ? [azurerm_user_assigned_identity.containerapp.id] : []
+    identity_ids = var.deploy_acr ? [azurerm_user_assigned_identity.containerapp[0].id] : []
   }
 
   dynamic "ingress" {
