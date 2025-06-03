@@ -73,7 +73,7 @@ jobs:
       - name: OpenTofu Validate
         id: validate
         run: tofu validate -no-color
-      - name: OpenTofu Plan
+      - name: OpenTofu ${{ inputs.mode }}
         id: plan
         run: |
           tofu -chdir=terraform/${{ inputs.project}} \
