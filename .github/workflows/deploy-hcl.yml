@@ -10,7 +10,8 @@ on:
         type: choice
         options:
           - "Plan"
-          - "Deploy"
+          - "Apply"
+          - "Plan -destroy"
           - "Destroy"
       safety-check:
         description: "Enter delete to confirm destroy"
@@ -26,7 +27,7 @@ on:
         type: choice
         options:
           - "static-webhosting"
-          - "contaier-apps"
+          - "container-apps-nginx"
       stage:
         description: "Stage"
         required: true
@@ -74,5 +75,9 @@ jobs:
         run: tofu validate -no-color
       - name: OpenTofu Plan
         id: plan
-        run: tofu -chdir=terraform/${{ inputs.project}} plan -no-color -var-file=${{ inputs.stage }}.tfvars -out=tfplan
-        
+        run: |
+          tofu -chdir=terraform/${{ inputs.project}} \
+            $(echo "${{ inputs.mode }}" | tr '[:upper:]' '[:lower:]') \
+            -no-color \
+            -var-file=${{ inputs.stage }}.tfvars \
+            ${{ ((inputs.mode == 'Destroy') || (inputs.mode == 'Apply')) && ' -auto-approve' || ' -out=tfplan' }}
