@@ -79,5 +79,36 @@ jobs:
           tofu -chdir=terraform/${{ inputs.project}} \
             $(echo "${{ inputs.mode }}" | tr '[:upper:]' '[:lower:]') \
             -no-color \
+            ${{ (inputs.mode == 'Plan' || inputs.mode == 'Plan -destroy') && ' -lock=false'}}
             -var-file=${{ inputs.stage }}.tfvars \
             ${{ ((inputs.mode == 'Destroy') || (inputs.mode == 'Apply')) && ' -auto-approve' || ' -out=tfplan' }}
+      - name: "Plan to File"
+        if: (inputs.mode == 'Plan' || inputs.mode == 'Plan -destroy')
+        shell: bash
+        run: |
+          tofu -chdir=terraform/${{ inputs.project}} \
+          show -no-color tfplan > tf_plan_output.txt
+      - name: Job Summary
+        id: plantosummary
+        if: (inputs.mode == 'Plan' || inputs.mode == 'Plan -destroy')
+        uses: actions/github-script@v7
+        with:
+          result-encoding: string
+          script: |
+            try {
+              const fs = require('fs')
+              if (fs.existsSync('./tf_plan_output.txt')){
+                const fileContentPlanOutput = fs.readFileSync('./tf_plan_output.txt')
+                if (typeof fileContentPlanOutput != 'undefined'){
+                  const planOutput = fileContentPlanOutput.toString()
+                  await core.summary
+                    .addHeading('OpenTofu Plan Summary').addEOL()
+                    // note: the additional second \n is a github bug.. (see: 20240109)
+                    .addDetails("Click to expand", `\n\n~~~\n${planOutput}\n~~~\n`)
+                    .addEOL().write();
+                }  
+              }  
+            } catch(err) {
+              core.error("Error while reading file:"+ err)
+              core.setFailed(err)
+            }
