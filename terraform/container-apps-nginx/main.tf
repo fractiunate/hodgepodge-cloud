@@ -154,7 +154,7 @@ resource "azurerm_container_app" "nginx_app" {
   dynamic "ingress" {
     for_each = var.container_app_ingress != null ? [var.container_app_ingress] : []
     content {
-      external_enabled = false
+      external_enabled = ingress.value.external_enabled
       target_port      = ingress.value.target_port
       traffic_weight {
         percentage      = ingress.value.traffic_weight.percentage

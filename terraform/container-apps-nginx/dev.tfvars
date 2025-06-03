@@ -4,6 +4,7 @@ container_app_name="nginx"
 container_app_image="nginx:latest"
 container_app_ingress = {
   target_port = 80
+  external_enabled = true
   traffic_weight = {
     percentage      = 100
     latest_revision = true

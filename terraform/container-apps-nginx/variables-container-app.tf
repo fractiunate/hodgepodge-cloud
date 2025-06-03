@@ -83,7 +83,8 @@ variable "container_app_secrets" {
 
 variable "container_app_ingress" {
   type = object({
-    target_port = number
+    target_port      = number
+    external_enabled = optional(bool, false)
     traffic_weight = object({
       percentage      = number
       latest_revision = bool
