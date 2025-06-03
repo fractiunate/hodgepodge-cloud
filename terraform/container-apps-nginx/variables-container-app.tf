@@ -19,7 +19,8 @@ variable "container_app_image" {
 }
 
 variable "container_app_env" {
-  type = map(string)
+  type    = map(string)
+  default = {}
 }
 
 variable "container_app_args" {
