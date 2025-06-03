@@ -5,12 +5,12 @@ variable "container_app_name" {
 
 variable "cpu" {
   type    = number
-  default = 1
+  default = 0.25
 }
 
 variable "memory" {
   type    = string
-  default = "1Gi"
+  default = "0.5Gi"
 }
 
 variable "container_app_image" {
