@@ -1,9 +1,11 @@
 resource "azurerm_storage_account" "fileshare" {
-  name                     = "${var.stage}sacanginx${random_string.suffix.result}"
-  resource_group_name      = azurerm_resource_group.this.name
-  location                 = var.location
-  account_tier             = "Standard"
-  account_replication_type = "LRS"
+  name                          = "${var.stage}sacanginx${random_string.suffix.result}"
+  resource_group_name           = azurerm_resource_group.this.name
+  location                      = var.location
+  account_tier                  = "Standard"
+  account_replication_type      = "LRS"
+  public_network_access_enabled = false
+  https_traffic_only_enabled    = true
 }
 
 resource "azurerm_storage_share" "nginx" {
