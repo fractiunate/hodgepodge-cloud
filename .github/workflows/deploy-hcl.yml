@@ -62,7 +62,6 @@ jobs:
           result-encoding: string
           script: |
             core.setFailed('Destroy validation check failed. Please confirm by entering "delete" in the input field.')
-
       - uses: actions/checkout@v4
       - uses: opentofu/setup-opentofu@v1
         with:
