@@ -73,7 +73,17 @@ resource "azurerm_container_app" "nginx_app" {
 
   # workload_profile_name = "DedicatedE4"
 
+
   template {
+
+    volume {
+      name = "reactfiles"
+
+      storage_name = azurerm_storage_share.react_content.name
+      storage_type = "AzureFile"
+
+    }
+
     container {
       name   = var.container_app_name
       image  = var.container_app_image
@@ -82,6 +92,11 @@ resource "azurerm_container_app" "nginx_app" {
 
       command = var.container_app_command
       args    = var.container_app_args
+
+      volume_mounts {
+        name = "reactfiles"
+        path = "/usr/share/nginx/html"
+      }
 
       dynamic "env" {
         for_each = var.container_app_env
