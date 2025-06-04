@@ -78,7 +78,7 @@ resource "azurerm_container_app" "nginx_app" {
 
     volume {
       name         = "reactfiles"
-      storage_name = azurerm_container_app_environment_storage.fileshare.name
+      storage_name = azurerm_container_app_environment_storage.fileshare[0].name
       storage_type = "AzureFile"
     }
 
