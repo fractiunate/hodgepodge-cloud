@@ -20,3 +20,7 @@ variable "project" {
 variable "deploy_acr" {
   default = false
 }
+
+variable "deploy_storage" {
+  default = true
+}

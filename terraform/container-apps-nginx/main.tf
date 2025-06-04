@@ -37,7 +37,7 @@ resource "azurerm_container_app_environment" "this" {
 }
 
 resource "azurerm_user_assigned_identity" "containerapp" {
-  count               = var.deploy_acr ? 1 : 0
+  count               = var.deploy_acr || var.deploy_storage ? 1 : 0
   location            = var.location
   name                = "${var.stage}containerappnginxa${random_string.suffix.result}"
   resource_group_name = azurerm_resource_group.this.name
@@ -160,8 +160,8 @@ resource "azurerm_container_app" "nginx_app" {
   }
 
   identity {
-    type         = join(" ,", concat(["SystemAssigned"], (var.deploy_acr ? ["UserAssigned"] : [])))
-    identity_ids = var.deploy_acr ? [azurerm_user_assigned_identity.containerapp[0].id] : []
+    type         = join(" ,", concat(["SystemAssigned"], (var.deploy_acr || var.deploy_storage ? ["UserAssigned"] : [])))
+    identity_ids = var.deploy_acr || var.deploy_storage ? [azurerm_user_assigned_identity.containerapp[0].id] : []
   }
 
   dynamic "ingress" {
