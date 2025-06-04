@@ -33,7 +33,7 @@ on:
         required: false
         default: "1.10.0-beta1"
       safety-check:
-        description: "Enter delete to confirm destroy"
+        description: 'Enter "delete" to confirm destroy'
         required: false
         default: ""
 
@@ -55,6 +55,14 @@ jobs:
       ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID || vars.ARM_TENANT_ID }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID || vars.ARM_SUBSCRIPTION_ID }}
     steps:
+      - name: Destroy Check
+        if: (inputs.mode == 'Destroy' && inputs.safety-check != 'delete')
+        uses: actions/github-script@v7
+        with:
+          result-encoding: string
+          script: |
+            core.setFailed('Destroy validation check failed. Please confirm by entering "delete" in the input field.')
+
       - uses: actions/checkout@v4
       - uses: opentofu/setup-opentofu@v1
         with:
