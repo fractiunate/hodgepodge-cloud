@@ -21,9 +21,8 @@ resource "azurerm_email_communication_service" "this" {
 }
 
 resource "azurerm_email_communication_service_domain" "this" {
-  name             = var.custom_domain != null ? var.custom_domain.domain_name : "AzureManagedDomain"
-  email_service_id = azurerm_email_communication_service.this.id
-
+  name              = var.custom_domain != null ? var.custom_domain.domain_name : "AzureManagedDomain"
+  email_service_id  = azurerm_email_communication_service.this.id
   domain_management = var.custom_domain != null ? "CustomerManaged" : "AzureManaged"
   tags              = local.tags
 }
@@ -46,8 +45,7 @@ resource "azurerm_dns_txt_record" "domain" {
     value = azurerm_email_communication_service_domain.this.verification_records[0].spf[*].value[0]
   }
   depends_on = [azurerm_email_communication_service_domain.this]
-
-  tags = local.tags
+  tags       = local.tags
 }
 
 # CNAME DKIM and DKIM2 Records
@@ -84,4 +82,45 @@ resource "azapi_resource_action" "initiate_validations" {
 resource "time_sleep" "wait_for_validation_success" {
   depends_on      = [azapi_resource_action.initiate_validations]
   create_duration = "30s"
+}
+
+resource "azapi_resource_action" "associate_validated_domain" {
+  count       = var.custom_domain != null ? 1 : 0
+  type        = "Microsoft.Communication/CommunicationServices@2023-03-31"
+  method      = "PATCH"
+  resource_id = azurerm_communication_service.this.id
+
+  body = {
+    properties = {
+      linkedDomains = [azurerm_email_communication_service_domain.this.id]
+    }
+  }
+  depends_on = [time_sleep.wait_for_validation_success]
+}
+
+resource "azapi_resource_action" "unlink_validated_domain" {
+  count       = var.custom_domain != null ? 1 : 0
+  when        = "destroy"
+  type        = "Microsoft.Communication/CommunicationServices@2023-03-31"
+  method      = "PATCH"
+  resource_id = azurerm_communication_service.this.id
+  body = {
+    properties = {
+      linkedDomains = []
+    }
+  }
+  depends_on = [azapi_resource_action.validate_dkim2]
+}
+
+resource "azapi_resource" "sender_username" {
+  for_each  = toset(try(var.custom_domain.sender_usernames, []))
+  type      = "Microsoft.Communication/emailServices/domains/senderUsernames@2023-04-01-preview"
+  name      = each.key
+  parent_id = azurerm_email_communication_service_domain.this.id
+  body = {
+    properties = {
+      displayName = each.key
+      username    = each.key
+    }
+  }
 }

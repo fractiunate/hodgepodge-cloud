@@ -29,6 +29,7 @@ variable "custom_domain" {
   type = object({
     domain_name         = string
     resource_group_name = string
+    sender_usernames    = optional(list(string), ["no-reply"])
   })
   default  = null
   nullable = true
