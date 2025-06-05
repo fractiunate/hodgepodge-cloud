@@ -26,8 +26,10 @@ variable "data_location" {
 
 variable "custom_domain" {
   description = "The custom domain for the email communication service."
-  type        = string
-  default     = null
-  nullable    = true
-
+  type = object({
+    domain_name         = string
+    resource_group_name = string
+  })
+  default  = null
+  nullable = true
 }

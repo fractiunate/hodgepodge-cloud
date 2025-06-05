@@ -27,3 +27,61 @@ resource "azurerm_email_communication_service_domain" "this" {
   domain_management = var.custom_domain != null ? "CustomerManaged" : "AzureManaged"
   tags              = local.tags
 }
+
+# Domain Verification: TXT Records
+resource "azurerm_dns_txt_record" "domain" {
+  count               = var.custom_domain != null ? 1 : 0
+  name                = "@"
+  zone_name           = var.custom_domain.domain_name
+  resource_group_name = var.custom_domain.resource_group_name
+  ttl                 = azurerm_email_communication_service_domain.this.verification_records[0].domain[*].ttl[0]
+
+  # Domain Verification
+  record {
+    value = azurerm_email_communication_service_domain.this.verification_records[0].domain[*].value[0]
+  }
+
+  # SPF Verification
+  record {
+    value = azurerm_email_communication_service_domain.this.verification_records[0].spf[*].value[0]
+  }
+  depends_on = [azurerm_email_communication_service_domain.this]
+
+  tags = local.tags
+}
+
+# CNAME DKIM and DKIM2 Records
+resource "azurerm_dns_cname_record" "dkim_records" {
+  for_each            = { for cname in ["dkim", "dkim2"] : cname => cname if var.custom_domain != null }
+  name                = azurerm_email_communication_service_domain.this.verification_records[0][each.key][*].name[0]
+  zone_name           = var.custom_domain.domain_name
+  resource_group_name = var.custom_domain.resource_group_name
+  record              = azurerm_email_communication_service_domain.this.verification_records[0][each.key][*].value[0]
+  ttl                 = azurerm_email_communication_service_domain.this.verification_records[0][each.key][*].ttl[0]
+  depends_on          = [azurerm_email_communication_service_domain.this]
+
+  tags = local.tags
+}
+
+# Initiate: Domain, SPF and DKIM Verification 
+resource "azapi_resource_action" "initiate_validations" {
+  for_each    = { for verify in ["Domain", "SPF", "DKIM", "DKIM2"] : verify => verify if var.custom_domain != null }
+  count       = var.custom_domain != null ? 1 : 0
+  type        = "Microsoft.Communication/emailServices/domains@2023-03-31"
+  action      = "initiateVerification"
+  resource_id = azurerm_email_communication_service_domain.this.id
+
+  body = {
+    verificationType = each.key
+  }
+  depends_on = [
+    azurerm_dns_txt_record.domain,
+    azapi_resource_action.validate_domain,
+    azapi_resource_action.validate_spf
+  ]
+}
+
+resource "time_sleep" "wait_for_validation_success" {
+  depends_on      = [azapi_resource_action.initiate_validations]
+  create_duration = "30s"
+}
