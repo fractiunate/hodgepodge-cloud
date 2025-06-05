@@ -61,9 +61,9 @@ resource "azurerm_dns_cname_record" "dkim_records" {
   tags = local.tags
 }
 
-# Initiate: Domain, SPF and DKIM Verification 
-resource "azapi_resource_action" "initiate_validations" {
-  for_each    = { for verify in ["Domain", "SPF", "DKIM", "DKIM2"] : verify => verify if var.custom_domain != null }
+# Initiate: Domain Verification 
+resource "azapi_resource_action" "initiate_validation_domain" {
+  for_each    = { for verify in ["Domain"] : verify => verify if var.custom_domain != null }
   type        = "Microsoft.Communication/emailServices/domains@2023-03-31"
   action      = "initiateVerification"
   resource_id = azurerm_email_communication_service_domain.this.id
@@ -73,13 +73,57 @@ resource "azapi_resource_action" "initiate_validations" {
   }
   depends_on = [
     azurerm_dns_txt_record.domain,
-    azapi_resource_action.validate_domain,
-    azapi_resource_action.validate_spf
+  ]
+}
+
+# Initiate: SPF Verification 
+resource "azapi_resource_action" "initiate_validation_spf" {
+  for_each    = { for verify in ["SPF"] : verify => verify if var.custom_domain != null }
+  type        = "Microsoft.Communication/emailServices/domains@2023-03-31"
+  action      = "initiateVerification"
+  resource_id = azurerm_email_communication_service_domain.this.id
+
+  body = {
+    verificationType = each.key
+  }
+  depends_on = [
+    azurerm_dns_txt_record.domain,
+    azapi_resource_action.initiate_validation_domain,
+  ]
+}
+
+resource "azapi_resource_action" "initiate_validation_dkim" {
+  for_each    = { for verify in ["DKIM"] : verify => verify if var.custom_domain != null }
+  type        = "Microsoft.Communication/emailServices/domains@2023-03-31"
+  action      = "initiateVerification"
+  resource_id = azurerm_email_communication_service_domain.this.id
+
+  body = {
+    verificationType = each.key
+  }
+  depends_on = [
+    azurerm_dns_txt_record.domain,
+    azapi_resource_action.initiate_validation_spf,
+  ]
+}
+
+resource "azapi_resource_action" "initiate_validation_dkim2" {
+  for_each    = { for verify in ["DKIM2"] : verify => verify if var.custom_domain != null }
+  type        = "Microsoft.Communication/emailServices/domains@2023-03-31"
+  action      = "initiateVerification"
+  resource_id = azurerm_email_communication_service_domain.this.id
+
+  body = {
+    verificationType = each.key
+  }
+  depends_on = [
+    azurerm_dns_txt_record.domain,
+    azapi_resource_action.initiate_validation_dkim,
   ]
 }
 
 resource "time_sleep" "wait_for_validation_success" {
-  depends_on      = [azapi_resource_action.initiate_validations]
+  depends_on      = [azapi_resource_action.initiate_validation_dkim2]
   create_duration = "30s"
 }
 
@@ -108,7 +152,12 @@ resource "azapi_resource_action" "unlink_validated_domain" {
       linkedDomains = []
     }
   }
-  depends_on = [azapi_resource_action.initiate_validations]
+  depends_on = [
+    azapi_resource_action.initiate_validation_domain,
+    azapi_resource_action.initiate_validation_spf,
+    azapi_resource_action.initiate_validation_dkim,
+    azapi_resource_action.initiate_validation_dkim2,
+  ]
 }
 
 resource "azapi_resource" "sender_username" {
