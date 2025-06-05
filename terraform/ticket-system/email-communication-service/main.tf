@@ -33,16 +33,16 @@ resource "azurerm_dns_txt_record" "domain" {
   name                = "@"
   zone_name           = var.custom_domain.domain_name
   resource_group_name = var.custom_domain.resource_group_name
-  ttl                 = azurerm_email_communication_service_domain.this.verification_records[0].domain[*].ttl[0]
+  ttl                 = azurerm_email_communication_service_domain.this.verification_records[0].domain[0].ttl
 
   # Domain Verification
   record {
-    value = azurerm_email_communication_service_domain.this.verification_records[0].domain[*].value[0]
+    value = azurerm_email_communication_service_domain.this.verification_records[0].domain[0].value
   }
 
   # SPF Verification
   record {
-    value = azurerm_email_communication_service_domain.this.verification_records[0].spf[*].value[0]
+    value = azurerm_email_communication_service_domain.this.verification_records[0].spf[0].value
   }
   depends_on = [azurerm_email_communication_service_domain.this]
   tags       = local.tags
@@ -51,11 +51,11 @@ resource "azurerm_dns_txt_record" "domain" {
 # CNAME DKIM and DKIM2 Records
 resource "azurerm_dns_cname_record" "dkim_records" {
   for_each            = { for cname in ["dkim", "dkim2"] : cname => cname if var.custom_domain != null }
-  name                = azurerm_email_communication_service_domain.this.verification_records[0][each.key][*].name[0]
+  name                = azurerm_email_communication_service_domain.this.verification_records[0][each.key][0].name
   zone_name           = var.custom_domain.domain_name
   resource_group_name = var.custom_domain.resource_group_name
-  record              = azurerm_email_communication_service_domain.this.verification_records[0][each.key][*].value[0]
-  ttl                 = azurerm_email_communication_service_domain.this.verification_records[0][each.key][*].ttl[0]
+  record              = azurerm_email_communication_service_domain.this.verification_records[0][each.key][0].value
+  ttl                 = azurerm_email_communication_service_domain.this.verification_records[0][each.key][0].ttl
   depends_on          = [azurerm_email_communication_service_domain.this]
 
   tags = local.tags
