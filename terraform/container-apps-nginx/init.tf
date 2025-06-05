@@ -21,5 +21,6 @@ provider "azurerm" {
 provider "random" {}
 
 resource "azurerm_resource_provider_registration" "app" {
-  name = "Microsoft.App"
+  count = var.provider_registration_ms_app ? 1 : 0
+  name  = "Microsoft.App"
 }

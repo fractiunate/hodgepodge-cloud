@@ -24,3 +24,7 @@ variable "deploy_acr" {
 variable "deploy_storage" {
   default = true
 }
+
+variable "provider_registration_ms_app" {
+  default = false
+}
