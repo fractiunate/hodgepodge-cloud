@@ -20,8 +20,9 @@ on:
         options:
           - "static-webhosting"
           - "container-apps-nginx"
-          - "ticket-system/eventhub"
           - "ticket-system/storage-queue"
+          - "ticket-system/email-communication-service"
+          - "ticket-system/eventhub"
       stage:
         description: "Stage"
         required: true
