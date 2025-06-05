@@ -23,3 +23,11 @@ variable "data_location" {
   default     = "Germany"
   nullable    = false
 }
+
+variable "custom_domain" {
+  description = "The custom domain for the email communication service."
+  type        = string
+  default     = null
+  nullable    = true
+
+}

@@ -19,3 +19,11 @@ resource "azurerm_email_communication_service" "this" {
   data_location       = var.data_location
   tags                = local.tags
 }
+
+resource "azurerm_email_communication_service_domain" "this" {
+  name             = var.custom_domain != null ? var.custom_domain.domain_name : "AzureManagedDomain"
+  email_service_id = azurerm_email_communication_service.this.id
+
+  domain_management = var.custom_domain != null ? "CustomerManaged" : "AzureManaged"
+  tags              = local.tags
+}
