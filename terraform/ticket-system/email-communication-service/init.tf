@@ -10,6 +10,10 @@ terraform {
       source  = "hashicorp/azurerm"
       version = "~> 4.13"
     }
+    azapi = {
+      source  = "azure/azapi"
+      version = "2.4.0"
+    }
   }
   required_version = ">= 1.10.0"
 }
@@ -17,6 +21,8 @@ terraform {
 provider "azurerm" {
   features {}
 }
+
+provider "azapi" {}
 
 provider "random" {}
 
