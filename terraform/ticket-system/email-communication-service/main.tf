@@ -108,7 +108,7 @@ resource "azapi_resource_action" "unlink_validated_domain" {
       linkedDomains = []
     }
   }
-  depends_on = [azapi_resource_action.validate_dkim2]
+  depends_on = [azapi_resource_action.initiate_validations]
 }
 
 resource "azapi_resource" "sender_username" {
