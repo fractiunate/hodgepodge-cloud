@@ -64,7 +64,6 @@ resource "azurerm_dns_cname_record" "dkim_records" {
 # Initiate: Domain, SPF and DKIM Verification 
 resource "azapi_resource_action" "initiate_validations" {
   for_each    = { for verify in ["Domain", "SPF", "DKIM", "DKIM2"] : verify => verify if var.custom_domain != null }
-  count       = var.custom_domain != null ? 1 : 0
   type        = "Microsoft.Communication/emailServices/domains@2023-03-31"
   action      = "initiateVerification"
   resource_id = azurerm_email_communication_service_domain.this.id
