@@ -12,6 +12,16 @@ variable "static_web_app_name" {
   default     = "example-static-web-app"
 }
 
+variable "stage" {
+  description = "The stage of the deployment (e.g., dev, prod)."
+  default     = "dev"
+}
+
+variable "project" {
+  description = "The name of the project for tagging purposes."
+  default     = "static-webhosting"
+}
+
 variable "sku_tier" {
   description = "The SKU tier for the static web app."
   default     = "Free"

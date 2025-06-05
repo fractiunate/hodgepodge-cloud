@@ -14,17 +14,12 @@ variable "stage" {
 
 variable "project" {
   description = "The name of the project for tagging purposes."
-  default     = "container-apps-nginx"
+  default     = "static-webhosting"
 }
 
-variable "deploy_acr" {
-  default = false
-}
-
-variable "deploy_storage" {
-  default = true
-}
-
-variable "provider_registration_ms_app" {
-  default = false
+variable "data_location" {
+  description = "The location of the email data (a geography, not a region or data center). See https://learn.microsoft.com/en-us/azure/communication-services/concepts/privacy"
+  type        = string
+  default     = "Germany"
+  nullable    = false
 }
