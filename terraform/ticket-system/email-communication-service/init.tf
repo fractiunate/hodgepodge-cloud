@@ -22,6 +22,12 @@ provider "azurerm" {
   features {}
 }
 
+provider "azurerm" {
+  features {}
+  alias           = "dns"
+  subscription_id = var.custom_domain.dns_subscription_id || null
+}
+
 provider "azapi" {}
 
 provider "random" {}

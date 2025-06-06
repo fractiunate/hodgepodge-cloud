@@ -29,6 +29,7 @@ resource "azurerm_email_communication_service_domain" "this" {
 
 # Domain Verification: TXT Records
 resource "azurerm_dns_txt_record" "domain" {
+  provider            = azurerm.dns
   count               = var.custom_domain != null ? 1 : 0
   name                = "@"
   zone_name           = var.custom_domain.domain_name
@@ -50,6 +51,7 @@ resource "azurerm_dns_txt_record" "domain" {
 
 # CNAME DKIM and DKIM2 Records
 resource "azurerm_dns_cname_record" "dkim_records" {
+  provider            = azurerm.dns
   for_each            = { for cname in ["dkim", "dkim2"] : cname => cname if var.custom_domain != null }
   name                = azurerm_email_communication_service_domain.this.verification_records[0][each.key][0].name
   zone_name           = var.custom_domain.domain_name

@@ -28,6 +28,7 @@ variable "custom_domain" {
   description = "The custom domain for the email communication service."
   type = object({
     domain_name         = string
+    dns_subscription_id = optional(string, null)
     resource_group_name = string
     sender_usernames    = optional(list(string), ["no-reply"])
   })
