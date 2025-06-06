@@ -24,8 +24,9 @@ provider "azurerm" {
 
 provider "azurerm" {
   features {}
+  for_each        = { for provider_config in toset["dns"] : provider_config => provider_config if var.custom_domain.dns_subscription_id != null }
   alias           = "dns"
-  subscription_id = var.custom_domain.dns_subscription_id || null
+  subscription_id = var.custom_domain.dns_subscription_id
 }
 
 provider "azapi" {}
