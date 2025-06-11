@@ -49,7 +49,7 @@ resource "azurerm_linux_web_app" "this" {
     }
 
     dynamic "ip_restriction" {
-      for_each = var.whitelist_ips != [] ? toset(var.whitelist_ips) : []
+      for_each = length(var.whitelist_ips) > 0 ? toset(var.whitelist_ips) : []
       content {
         action     = "Allow"
         ip_address = ip_restriction.value
@@ -58,7 +58,7 @@ resource "azurerm_linux_web_app" "this" {
     }
 
     dynamic "scm_ip_restriction" {
-      for_each = var.whitelist_ips_scm != [] ? toset(var.whitelist_ips_scm) : []
+      for_each = length(var.whitelist_ips) > 0 ? toset(var.whitelist_ips_scm) : []
       content {
         action     = "Allow"
         ip_address = scm_ip_restriction.value
