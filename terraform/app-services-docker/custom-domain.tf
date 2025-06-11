@@ -1,5 +1,5 @@
 resource "azurerm_dns_txt_record" "validation" {
-  count               = var.custom_domain != null
+  count               = var.custom_domain != null ? 1 : 0
   name                = join(".", ["asuid", var.custom_domain.subdomain])
   zone_name           = var.custom_domain.domain_name
   resource_group_name = var.custom_domain.resource_group_name
@@ -13,7 +13,7 @@ resource "azurerm_dns_txt_record" "validation" {
 }
 
 resource "azurerm_app_service_certificate" "this" {
-  count               = var.custom_domain != null
+  count               = var.custom_domain != null ? 1 : 0
   name                = "${var.stage}-docker-cert-${random_string.suffix.result}"
   resource_group_name = var.resource_group_name
   location            = var.location
@@ -21,14 +21,14 @@ resource "azurerm_app_service_certificate" "this" {
 }
 
 resource "azurerm_app_service_custom_hostname_binding" "website_app_hostname_bind" {
-  count               = var.custom_domain != null
+  count               = var.custom_domain != null ? 1 : 0
   hostname            = "${var.custom_domain.subdomain}.${var.custom_domain.domain_name}"
   app_service_name    = azurerm_linux_web_app.this.name
   resource_group_name = var.resource_group_name
 }
 
 resource "azurerm_app_service_certificate_binding" "bind_certificate_to_webapp" {
-  count               = var.custom_domain != null
+  count               = var.custom_domain != null ? 1 : 0
   hostname_binding_id = azurerm_app_service_custom_hostname_binding.website_app_hostname_bind[0].id
   ssl_state           = "SniEnabled"
   certificate_id      = azurerm_app_service_certificate.this[0].id
