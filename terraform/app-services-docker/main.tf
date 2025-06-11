@@ -6,7 +6,7 @@ resource "random_string" "suffix" {
 }
 
 resource "azurerm_service_plan" "this" {
-  name                = "asp-${var.stage}-docker-py-${random_string.suffix.result}"
+  name                = "asp-${var.stage}-docker-${random_string.suffix.result}"
   location            = var.location
   resource_group_name = var.resource_group_name
   os_type             = "Linux"
@@ -15,7 +15,7 @@ resource "azurerm_service_plan" "this" {
 }
 
 resource "azurerm_linux_web_app" "this" {
-  name                    = "ase-${var.stage}-docker-py-${random_string.suffix.result}"
+  name                    = "ase-${var.stage}-docker-${random_string.suffix.result}"
   location                = var.location
   resource_group_name     = var.resource_group_name
   service_plan_id         = azurerm_service_plan.this.id

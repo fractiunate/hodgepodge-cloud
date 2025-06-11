@@ -21,6 +21,7 @@ variable "custom_domain" {
   nullable = true
   default  = null
   type = object({
+    subdomain           = optional(string, "www")
     domain_name         = string
     dns_subscription_id = optional(string, null)
     resource_group_name = optional(string, null)
@@ -85,4 +86,35 @@ variable "sku_name" {
 variable "ARM_SUBSCRIPTION_ID" {
   nullable    = false
   description = "The Azure subscription ID for the deployment. Set in the CI/CD pipeline."
+}
+
+variable "certificate_blob_b64" {
+  nullable    = true
+  default     = null
+  description = "Base64 encoded PFX certificate blob for custom domain SSL binding. If null, the certificate will be created using ACME."
+  type        = string
+  validation {
+    condition     = can(regex("^[A-Za-z0-9+/=]+$", var.certificate_blob_b64)) || var.certificate_blob_b64 == null
+    error_message = "The certificate_blob_b64 must be a valid Base64 encoded string or null."
+  }
+}
+
+variable "docker" {
+  nullable    = false
+  description = "Docker image configuration for the app service."
+  default = {
+    image             = "nginx"
+    tag               = "latest"
+    registry_url      = "docker.io"
+    registry_username = null
+    registry_password = null
+  }
+  type = object({
+    image             = string
+    tag               = optional(string, "latest")
+    registry_url      = optional(string, "docker.io")
+    registry_username = optional(string, null)
+    registry_password = optional(string, null)
+  })
+
 }
