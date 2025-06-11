@@ -69,7 +69,7 @@ resource "azurerm_linux_web_app" "this" {
 
     # default deny all when whitelist is provided
     dynamic "ip_restriction" {
-      for_each = var.whitelist_ips != [] ? ["default_deny_all"] : []
+      for_each = length(var.whitelist_ips) > 0 ? ["default_deny_all"] : []
       content {
         action     = "Deny"
         ip_address = "0.0.0.0/0"
@@ -78,7 +78,7 @@ resource "azurerm_linux_web_app" "this" {
     }
 
     dynamic "scm_ip_restriction" {
-      for_each = var.whitelist_ips != [] ? ["default_deny_all_scm"] : []
+      for_each = length(var.whitelist_ips) > 0 ? ["default_deny_all_scm"] : []
       content {
         action     = "Deny"
         ip_address = "0.0.0.0/0"
