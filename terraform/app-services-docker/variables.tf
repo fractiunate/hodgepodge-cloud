@@ -18,7 +18,13 @@ variable "project" {
 }
 
 variable "custom_domain" {
-  nullable    = true
+  nullable = true
+  default  = null
+  type = object({
+    domain_name         = string
+    dns_subscription_id = optional(string, null)
+    resource_group_name = optional(string, null)
+  })
   description = "The custom domain for the app service."
 }
 
@@ -74,4 +80,9 @@ variable "app_environments" {
 variable "sku_name" {
   default     = "B1"
   description = "The SKU name for the app service plan. Default is B1 (Basic)."
+}
+
+variable "ARM_SUBSCRIPTION_ID" {
+  nullable    = false
+  description = "The Azure subscription ID for the deployment. Set in the CI/CD pipeline."
 }
