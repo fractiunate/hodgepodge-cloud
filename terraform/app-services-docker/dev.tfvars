@@ -1,2 +1,2 @@
-resource_group_name = "dev-example-app-service-docker-py-rg"
+resource_group_name = "dev-example-app-service-docker-rg"
 location            = "West Europe"

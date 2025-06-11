@@ -14,7 +14,7 @@ variable "stage" {
 
 variable "project" {
   description = "The name of the project for tagging purposes."
-  default     = "app-services-docker-python"
+  default     = "app-services-docker"
 }
 
 variable "custom_domain" {
