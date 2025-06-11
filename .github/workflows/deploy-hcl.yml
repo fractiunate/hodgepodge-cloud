@@ -30,7 +30,8 @@ on:
         default: "dev"
         options:
           - "dev"
-          - "prod"
+          - "int"
+          - "prd"
       opentofu-version:
         description: "OpenTofu version to use"
         required: false
