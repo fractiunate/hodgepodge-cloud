@@ -1,3 +1,10 @@
+resource "random_string" "suffix" {
+  length  = 4
+  special = false
+  upper   = false
+  numeric = false
+}
+
 resource "azurerm_service_plan" "this" {
   name                = "asp-${var.stage}-docker-py-${random_string.suffix.result}"
   location            = var.location
