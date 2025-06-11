@@ -73,6 +73,7 @@ jobs:
           tofu_version: ${{ inputs.opentofu-version || '1.10.0-beta' }}
       - name: OpenTofu Init
         run: |
+          export TF_VAR_ARM_SUBSCRIPTION_ID=${{ env.ARM_SUBSCRIPTION_ID }}
           tofu -chdir=terraform/${{ inputs.project}} init \
             -backend-config="resource_group_name=${{ env.backend_config_resource_group_name }}" \
             -backend-config="storage_account_name=${{ env.backend_config_storage_account_name }}" \
@@ -88,6 +89,9 @@ jobs:
       - name: OpenTofu ${{ inputs.mode }}
         id: plan
         run: |
+          export TF_VAR_ARM_SUBSCRIPTION_ID=${{ env.ARM_SUBSCRIPTION_ID }}
+          export TF_VAR_project=${{ inputs.project }}
+          export TF_VAR_stage=${{ inputs.stage }}
           tofu -chdir=terraform/${{ inputs.project}} \
             $(echo "${{ inputs.mode }}" | tr '[:upper:]' '[:lower:]') \
             -no-color \
