@@ -10,6 +10,10 @@ terraform {
       source  = "hashicorp/azurerm"
       version = "~> 4.13"
     }
+    acme = {
+      source  = "ruokei/acme"
+      version = "0.0.8"
+    }
   }
   required_version = ">= 1.10.0"
 }
@@ -19,6 +23,7 @@ provider "azurerm" {
 }
 
 provider "random" {}
+
 
 resource "azurerm_resource_provider_registration" "app" {
   count = var.provider_registration_ms_app ? 1 : 0

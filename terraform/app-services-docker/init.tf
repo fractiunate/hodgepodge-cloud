@@ -18,6 +18,8 @@ terraform {
   required_version = ">= 1.10.0"
 }
 
+provider "random" {}
+
 provider "azurerm" {
   features {}
 }
@@ -28,5 +30,6 @@ provider "azurerm" {
   subscription_id = var.custom_domain.dns_subscription_id != null ? var.custom_domain.dns_subscription_id : var.ARM_SUBSCRIPTION_ID
 }
 
-provider "random" {}
-
+provider "acme" {
+  server_url = "https://acme-staging-v02.api.letsencrypt.org/directory"
+}
