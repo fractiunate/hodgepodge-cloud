@@ -11,7 +11,7 @@ resource "azurerm_resource_group" "this" {
 }
 
 resource "azurerm_container_app_environment" "this" {
-  name                = "${var.stage}-container-app-environment-${random_string.suffix.result}"
+  name                = "${var.stage}-environment-${var.container_app_name}-${random_string.suffix.result}"
   location            = var.location
   resource_group_name = azurerm_resource_group.this.name
 
