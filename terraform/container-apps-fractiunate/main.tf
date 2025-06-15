@@ -34,7 +34,7 @@ resource "azurerm_container_app_environment" "this" {
 
 
 resource "azurerm_container_app" "app" {
-  name                         = "${var.stage}-container-app-${var.container_app_name}-${random_string.suffix.result}"
+  name                         = "${var.stage}-${var.container_app_name}-${random_string.suffix.result}"
   container_app_environment_id = azurerm_container_app_environment.this.id
   resource_group_name          = azurerm_resource_group.this.name
   revision_mode                = "Single"
