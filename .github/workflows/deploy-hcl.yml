@@ -20,6 +20,7 @@ on:
         options:
           - "static-webhosting"
           - "container-apps-nginx"
+          - "container-apps-fractiunate"
           - "app-services-docker"
           - "ticket-system/storage-queue"
           - "ticket-system/email-communication-service"
