@@ -89,7 +89,7 @@ jobs:
         with:
           result-encoding: string
           script: |
-            const secrets = ${{ fromJson(secrets) || '{}'}}
+            const secrets = "${{ toJson(fromJson(secrets)) || '{}'}}";
             const secretsFilePath = './terraform/${{ inputs.project}}/${{ inputs.stage }}.gh.secrets.js';
 
             try {
