@@ -91,25 +91,28 @@ jobs:
           script: |
             const secrets = ${{ toJson(secrets) || '{}' }};
             const secretsFilePath = './terraform/${{ inputs.project}}/${{ inputs.stage }}.gh.secrets.js';
-
             try {
                 const secretsConfig = require(secretsFilePath).data || [];
-                for (const secret of secretsConfig) {
-                    const uppercaseSecretName = secret.name.toUpperCase();
-                    console.log(`Checking secret: ${uppercaseSecretName}`);
-                    if (secret.mandatory && !secrets[uppercaseSecretName]) {
-                        console.error(`Mandatory secret ${uppercaseSecretName} is missing.`);
-                        core.setFailed(`Mandatory secret ${uppercaseSecretName} is missing.`);
-                    }else{
-                        if (secrets[uppercaseSecretName]) {
-                          const secretValue = secrets[secret.nameuppercaseSecretName]
-                          core.exportVariable(`TF_VAR_${secret.name}`, secretValue);
-                        }
-                    }
+                try{
+                  for (const secret of secretsConfig) {
+                      const uppercaseSecretName = secret.name.toUpperCase();
+                      console.log(`Checking secret: ${uppercaseSecretName}`);
+                      if (secret.mandatory && !secrets[uppercaseSecretName]) {
+                          console.error(`Mandatory secret ${uppercaseSecretName} is missing.`);
+                          core.setFailed(`Mandatory secret ${uppercaseSecretName} is missing.`);
+                      }else{
+                          if (secrets[uppercaseSecretName]) {
+                            const secretValue = secrets[secret.nameuppercaseSecretName]
+                            core.exportVariable(`TF_VAR_${secret.name}`, secretValue);
+                          }
+                      }
+                  }
+                }catch (e) {
+                    console.error(`Error processing secrets: ${e.message}`);
+                    core.setFailed(`Error processing secrets: ${e.message}`);
                 }
             } catch (error) {
                 console.error(`Error reading secrets file: ${error.message}`);
-                core.setFailed(`Error reading secrets file: ${error.message}`);
             }
 
       - name: OpenTofu fmt
