@@ -112,7 +112,7 @@ jobs:
                     core.setFailed(`Error processing secrets: ${e.message}`);
                 }
             } catch (error) {
-                console.error(`Error reading secrets file: ${error.message}`);
+                console.warn(`Failed reading secrets file: ${error.message}`);
             }
 
       - name: OpenTofu fmt
