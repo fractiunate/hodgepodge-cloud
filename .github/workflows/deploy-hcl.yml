@@ -95,13 +95,14 @@ jobs:
             try {
                 const secretsConfig = require(secretsFilePath).data || [];
                 for (const secret of secretsConfig) {
-                    console.log(`Checking secret: ${secret.name}`);
-                    if (secret.mandatory && !secrets[secret.name]) {
-                        console.error(`Mandatory secret ${secret.name} is missing.`);
-                        core.setFailed(`Mandatory secret ${secret.name} is missing.`);
+                    const uppercaseSecretName = secret.name.toUpperCase();
+                    console.log(`Checking secret: ${uppercaseSecretName}`);
+                    if (secret.mandatory && !secrets[uppercaseSecretName]) {
+                        console.error(`Mandatory secret ${uppercaseSecretName} is missing.`);
+                        core.setFailed(`Mandatory secret ${uppercaseSecretName} is missing.`);
                     }else{
-                        if (secrets[secret.name]) {
-                          const secretValue = secrets[secret.name]
+                        if (secrets[uppercaseSecretName]) {
+                          const secretValue = secrets[secret.nameuppercaseSecretName]
                           exportVariable(`TF_VAR_${secret.name}`, secretValue);
                         }
                     }
