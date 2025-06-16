@@ -90,12 +90,14 @@ jobs:
         id: validate
         run: tofu validate -no-color
       - name: OpenTofu ${{ inputs.mode }}
-        id: plan
+        id: hcl-action
         run: |
           export TF_VAR_ARM_SUBSCRIPTION_ID=${{ env.ARM_SUBSCRIPTION_ID }}
           export TF_VAR_project=${{ inputs.project }}
           export TF_VAR_stage=${{ inputs.stage }}
-          tofu -chdir=terraform/${{ inputs.project}} \
+          chdir=terraform/${{ inputs.project}}
+          touch ${chdir}/${{ inputs.stage }}.tfvars
+          tofu -chdir=${chdir} \
             $(echo "${{ inputs.mode }}" | tr '[:upper:]' '[:lower:]') \
             -no-color \
             -input=false \
