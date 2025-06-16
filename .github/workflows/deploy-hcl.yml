@@ -22,6 +22,7 @@ on:
           - "container-apps-nginx"
           - "container-apps-fractiunate"
           - "kubernetes-base"
+          - "kubernetes-tools"
           - "app-services-docker"
           - "ticket-system/storage-queue"
           - "ticket-system/email-communication-service"
