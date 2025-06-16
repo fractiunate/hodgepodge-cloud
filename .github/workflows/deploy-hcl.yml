@@ -21,6 +21,7 @@ on:
           - "static-webhosting"
           - "container-apps-nginx"
           - "container-apps-fractiunate"
+          - "kubernetes-base"
           - "app-services-docker"
           - "ticket-system/storage-queue"
           - "ticket-system/email-communication-service"
