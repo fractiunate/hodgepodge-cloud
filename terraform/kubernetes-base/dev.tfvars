@@ -1,2 +1,2 @@
-resource_group_name="dev-fractiunate-container-apps-rg"
+resource_group_name="dev-fractiunate-aks-rg"
 location="West Europe"
