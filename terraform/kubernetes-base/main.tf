@@ -11,7 +11,7 @@ resource "azurerm_resource_group" "this" {
 }
 
 resource "azurerm_kubernetes_cluster" "aks" {
-  name                = "${var.stage}-aks-gitops-${randosm_string.suffix.result}"
+  name                = "${var.stage}-aks-gitops-${random_string.suffix.result}"
   location            = var.location
   resource_group_name = azurerm_resource_group.this.name
   dns_prefix          = "${var.stage}aksgitops${random_string.suffix.result}"
