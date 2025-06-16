@@ -103,12 +103,13 @@ jobs:
                     }else{
                         if (secrets[uppercaseSecretName]) {
                           const secretValue = secrets[secret.nameuppercaseSecretName]
-                          exportVariable(`TF_VAR_${secret.name}`, secretValue);
+                          core.exportVariable(`TF_VAR_${secret.name}`, secretValue);
                         }
                     }
                 }
             } catch (error) {
                 console.error(`Error reading secrets file: ${error.message}`);
+                core.setFailed(`Error reading secrets file: ${error.message}`);
             }
 
       - name: OpenTofu fmt
