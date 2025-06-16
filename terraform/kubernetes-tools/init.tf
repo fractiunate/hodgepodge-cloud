@@ -20,10 +20,10 @@ terraform {
 
 provider "helm" {
   kubernetes = {
-    host                   = base64decode(var.cluster_host)
-    client_certificate     = base64decode(var.client_certificate)
-    client_key             = base64decode(var.client_key)
-    cluster_ca_certificate = base64decode(var.cluster_ca_certificate)
+    host                   = base64decode(var.b64_cluster_host)
+    client_certificate     = base64decode(var.b64_client_certificate)
+    client_key             = base64decode(var.b64_client_key)
+    cluster_ca_certificate = base64decode(var.b64_cluster_ca_certificate)
   }
   experiments = {
     manifest = false
