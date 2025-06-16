@@ -90,8 +90,7 @@ jobs:
           result-encoding: string
           script: |
             const secrets = ${{ secrets || '{}'}}
-            const fs = require('fs');
-            const secretsFilePath = 'terraform/${{ inputs.project}}/${{ inputs.stage }}.gh.secrets.js';
+            const secretsFilePath = './terraform/${{ inputs.project}}/${{ inputs.stage }}.gh.secrets.js';
 
             try {
                 const secretsConfig = require(secretsFilePath).data || [];
@@ -107,7 +106,9 @@ jobs:
                         }
                     }
                 }
-            } catch (error) {}
+            } catch (error) {
+                console.error(`Error reading secrets file: ${error.message}`);
+            }
 
       - name: OpenTofu fmt
         id: fmt
