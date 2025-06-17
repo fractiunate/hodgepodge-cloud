@@ -20,6 +20,13 @@ resource "helm_release" "istio_ingress" {
   version         = "1.26.1"
   cleanup_on_fail = true
   namespace       = kubernetes_namespace.istio_system.metadata[0].name
+  set = [
+    {
+      name  = "revision"
+      value = "v1"
+    }
+  ]
+  depends_on = [helm_release.istiod]
 }
 
 
@@ -38,6 +45,10 @@ resource "helm_release" "istiod" {
       # Could go wrong in case any pod uses local storage or similar things
       name  = "sidecarInjectorWebhook.injectedAnnotations.cluster-autoscaler\\.kubernetes\\.io/safe-to-evict"
       value = "true"
+    },
+    {
+      name  = "revision"
+      value = "v1"
     }
   ]
   depends_on = [helm_release.istio_base]
