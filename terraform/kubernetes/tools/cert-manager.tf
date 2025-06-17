@@ -16,7 +16,7 @@ resource "helm_release" "certmanager" {
     value = "true"
     },
     {
-      name  = "crds.keep "
+      name  = "crds.keep"
       value = "true"
   }]
 }
