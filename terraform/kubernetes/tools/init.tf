@@ -11,11 +11,23 @@ terraform {
       source  = "hashicorp/helm"
       version = "3.0.0-pre1"
     }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "2.37.1"
+    }
     azurerm = {
       source  = "hashicorp/azurerm"
       version = "3.113.0"
     }
+
   }
+}
+
+provider "kubernetes" {
+  host                   = chomp(base64decode(var.b64_cluster_host))
+  client_certificate     = chomp(base64decode(var.b64_client_certificate))
+  client_key             = chomp(base64decode(var.b64_client_key))
+  cluster_ca_certificate = chomp(base64decode(var.b64_cluster_ca_certificate))
 }
 
 provider "helm" {
@@ -41,10 +53,4 @@ output "b64_cluster_host" {
 
 output "cluster_host" {
   value = chomp(base64decode(var.b64_cluster_host))
-}
-
-resource "kubernetes_namespace" "argocd" {
-  metadata {
-    name = "argocd"
-  }
 }
