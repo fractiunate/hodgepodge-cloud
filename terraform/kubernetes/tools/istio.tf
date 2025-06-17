@@ -62,7 +62,6 @@ resource "helm_release" "istio_gateway" {
   namespace       = kubernetes_namespace.istio_system.metadata[0].name
 
   values = [<<EOF
-
 - apiVersion: networking.istio.io/v1
   kind: Gateway
   metadata:
