@@ -13,6 +13,10 @@ resource "helm_release" "argocd" {
   cleanup_on_fail = true
 
   values = [<<EOF
+configs:
+  params:
+    server.insecure: true
+
 controller:
   resources:
     requests:
@@ -23,7 +27,6 @@ controller:
       cpu: "200m"
 
 server:
-  insecure: true
   resources:
     requests:
       memory: "64Mi"
@@ -90,5 +93,5 @@ resources:
             number: 80
 EOF
   ]
-  depends_on = [helm_release.istio_ingress]
+  depends_on = [helm_release.istio_ingress, helm_release.argocd]
 }
