@@ -1,0 +1,6 @@
+dependencies:
+- name: common
+  repository: https://library-charts.k8s-at-home.com
+  version: 2.3.0
+digest: sha256:158d20d4e0ea39b07b36c70201598286baf58d757a9c3b9a51dcc684d0144403
+generated: "2023-07-03T15:31:19.1223965+02:00"
