@@ -10,6 +10,7 @@ resource "helm_release" "istio_base" {
   repository      = "https://istio-release.storage.googleapis.com/charts"
   version         = "1.26.1"
   cleanup_on_fail = true
+  wait            = true
   namespace       = kubernetes_namespace.istio_system.metadata[0].name
 }
 
@@ -20,6 +21,7 @@ resource "helm_release" "istiod" {
   repository      = "https://istio-release.storage.googleapis.com/charts"
   version         = "1.26.1"
   cleanup_on_fail = true
+  wait            = true
   namespace       = kubernetes_namespace.istio_system.metadata[0].name
 
   set = [
@@ -44,6 +46,7 @@ resource "helm_release" "istio_ingress" {
   repository      = "https://istio-release.storage.googleapis.com/charts"
   version         = "1.26.1"
   cleanup_on_fail = true
+  wait            = true
   namespace       = kubernetes_namespace.istio_system.metadata[0].name
   set = [
     {
@@ -69,6 +72,8 @@ resources:
     name: gateway
     namespace: ${kubernetes_namespace.istio_system.metadata[0].name}
   spec:
+    labels:
+      istio.io/rev: v1
     selector:
       app: istio-ingressgateway
     servers:
