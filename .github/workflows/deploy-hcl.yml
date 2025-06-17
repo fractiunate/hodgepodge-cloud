@@ -90,7 +90,7 @@ jobs:
                           core.setFailed(`Mandatory secret ${uppercaseSecretName} is missing.`);
                       }else{
                           if (secrets[uppercaseSecretName]) {
-                            const secretValue = secrets[secret.nameuppercaseSecretName]
+                            const secretValue = secrets[uppercaseSecretName];
                             core.exportVariable(`TF_VAR_${secret.name}`, secretValue);
                           }
                       }
