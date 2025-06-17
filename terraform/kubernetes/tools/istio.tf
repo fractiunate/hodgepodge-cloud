@@ -72,8 +72,6 @@ resources:
     name: gateway
     namespace: ${kubernetes_namespace.istio_system.metadata[0].name}
   spec:
-    labels:
-      istio.io/rev: v1
     selector:
       app: istio-ingressgateway
     servers:
@@ -86,7 +84,6 @@ resources:
 EOF
   ]
   depends_on = [helm_release.istio_ingress]
-
 }
 
 
