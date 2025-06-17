@@ -57,7 +57,7 @@ resource "helm_release" "istio_ingress" {
 
 resource "helm_release" "istio_gateway" {
   name            = "default-gateway"
-  chart           = "helm/charts/itscontained/raw"
+  chart           = "../../../helm/charts/itscontained/raw"
   cleanup_on_fail = true
   namespace       = kubernetes_namespace.istio_system.metadata[0].name
 
