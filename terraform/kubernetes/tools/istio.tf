@@ -62,6 +62,7 @@ resource "helm_release" "istio_gateway" {
   namespace       = kubernetes_namespace.istio_system.metadata[0].name
 
   values = [<<EOF
+---
 apiVersion: networking.istio.io/v1
 kind: Gateway
 metadata:
@@ -76,7 +77,7 @@ spec:
       name: http
       protocol: HTTP
     hosts:
-    - *.dev.fractiunate.me
+    - "*.dev.fractiunate.me"
 EOF
   ]
   depends_on = [helm_release.istio_ingress]
