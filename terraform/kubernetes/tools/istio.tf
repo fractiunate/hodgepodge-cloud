@@ -13,6 +13,15 @@ resource "helm_release" "istio_base" {
   namespace       = kubernetes_namespace.istio_system.metadata[0].name
 }
 
+resource "helm_release" "istio_ingress" {
+  name            = "istio-ingressgateway"
+  chart           = "gateway"
+  repository      = "https://istio-release.storage.googleapis.com/charts"
+  version         = "1.26.1"
+  cleanup_on_fail = true
+  namespace       = kubernetes_namespace.istio_system.metadata[0].name
+}
+
 
 resource "helm_release" "istiod" {
   name            = "istiod"
