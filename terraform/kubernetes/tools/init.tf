@@ -42,3 +42,9 @@ output "b64_cluster_host" {
 output "cluster_host" {
   value = chomp(base64decode(var.b64_cluster_host))
 }
+
+resource "kubernetes_namespace" "argocd" {
+  metadata {
+    name = "argocd"
+  }
+}
