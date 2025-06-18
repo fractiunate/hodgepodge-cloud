@@ -9,6 +9,18 @@ variable "sla_sku" {
   default     = "Free"
 }
 
+variable "oidc_issuer_enabled" {
+  description = "Enable OIDC issuer for the AKS cluster."
+  type        = bool
+  default     = true
+}
+
+variable "workload_identity_enabled" {
+  description = "Enable Workload Identity for AKS"
+  type        = bool
+  default     = true
+}
+
 variable "admin_group_object_ids" {
   description = "List of Azure AD group object IDs that will be granted admin access to the AKS cluster."
   type        = list(string)

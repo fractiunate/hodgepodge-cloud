@@ -16,3 +16,23 @@ variable "project" {
   description = "The name of the project for tagging purposes."
   default     = "container-apps-nginx"
 }
+
+variable "ARM_SUBSCRIPTION_ID" {
+  nullable    = false
+  description = "The Azure subscription ID for the deployment. Set in the CI/CD pipeline."
+}
+
+variable "custom_domain" {
+  nullable = true
+  default  = null
+  type = object({
+    domain_name         = string
+    dns_subscription_id = optional(string, null)
+    resource_group_name = optional(string, null)
+  })
+  validation {
+    condition     = (var.custom_domain.dns_subscription_id != "" && var.custom_domain.resource_group_name != "")
+    error_message = "If dns_subscription_id is set, both dns_subscription_id and resource_group_name must be provided."
+  }
+  description = "The custom domain for the app service."
+}

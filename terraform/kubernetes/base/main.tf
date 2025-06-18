@@ -10,14 +10,40 @@ resource "azurerm_resource_group" "this" {
   location = var.location
 }
 
-resource "azurerm_kubernetes_cluster" "aks" {
-  name                = "${var.stage}-aks-gitops-${random_string.suffix.result}"
+data "azurerm_resource_group" "dns" {
+  count = var.custom_domain.resource_group_name != null ? 1 : 0
+  name  = var.custom_domain.resource_group_name
+}
+
+resource "azurerm_user_assigned_identity" "aks_workload_identity" {
+  count               = var.workload_identity_enabled ? 1 : 0
   location            = var.location
+  name                = "${var.stage}aksgitops${random_string.suffix.result}"
   resource_group_name = azurerm_resource_group.this.name
-  dns_prefix          = "${var.stage}aksgitops${random_string.suffix.result}"
-  kubernetes_version  = var.kubernetes_version
-  node_resource_group = "${var.resource_group_name}-nodes"
-  sku_tier            = var.sla_sku
+  tags                = local.tags
+}
+
+
+resource "azurerm_role_assignment" "dns" {
+  count                = var.workload_identity_enabled ? 1 : 0
+  scope                = var.custom_domain.resource_group_name == null ? azurerm_resource_group.this.id : data.azurerm_resource_group.dns[0].id
+  role_definition_name = "DNS Zone Contributor"
+  principal_id         = azurerm_user_assigned_identity.aks_workload_identity[0].principal_id
+  depends_on = [
+    azurerm_user_assigned_identity.aks_workload_identity
+  ]
+}
+
+resource "azurerm_kubernetes_cluster" "aks" {
+  name                      = "${var.stage}-aks-gitops-${random_string.suffix.result}"
+  location                  = var.location
+  resource_group_name       = azurerm_resource_group.this.name
+  dns_prefix                = "${var.stage}aksgitops${random_string.suffix.result}"
+  kubernetes_version        = var.kubernetes_version
+  node_resource_group       = "${var.resource_group_name}-nodes"
+  sku_tier                  = var.sla_sku
+  oidc_issuer_enabled       = var.oidc_issuer_enabled
+  workload_identity_enabled = var.workload_identity_enabled
 
   lifecycle {
     ignore_changes = [

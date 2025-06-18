@@ -11,12 +11,16 @@ resource "helm_release" "certmanager" {
   repository      = "https://charts.jetstack.io"
   namespace       = kubernetes_namespace.certificates.metadata[0].name
   cleanup_on_fail = true
-  set = [{
-    name  = "crds.enabled"
-    value = "true"
-    },
-    {
-      name  = "crds.keep"
-      value = "true"
-  }]
+
+  values = [<<EOF
+podLabels:
+  azure.workload.identity/use: "true"
+serviceAccount:
+  labels:
+    azure.workload.identity/use: "true"
+crds:
+  create: true
+  keep: true
+EOF
+  ]
 }
