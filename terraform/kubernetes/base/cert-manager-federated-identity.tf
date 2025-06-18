@@ -20,7 +20,7 @@ resource "azurerm_federated_identity_credential" "cert_manager_federated_identit
   audience            = ["api://AzureADTokenExchange"]
   issuer              = azurerm_kubernetes_cluster.aks.oidc_issuer_url
   parent_id           = azurerm_user_assigned_identity.aks_workload_identity[0].id
-  subject             = "system:serviceaccount:certicertificates:cert-manager"
+  subject             = "system:serviceaccount:certificates:cert-manager"
 }
 
 resource "azurerm_role_assignment" "dns" {
