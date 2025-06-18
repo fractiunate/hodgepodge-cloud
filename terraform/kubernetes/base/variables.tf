@@ -31,7 +31,7 @@ variable "custom_domain" {
     resource_group_name = optional(string, null)
   })
   validation {
-    condition     = (try(var.custom_domain.dns_subscription_id, null) != null && try(var.custom_domain.resource_group_name, null) != null)
+    condition     = !(try(var.custom_domain.dns_subscription_id, null) != null && try(var.custom_domain.resource_group_name, null) == null)
     error_message = "If dns_subscription_id is set, both dns_subscription_id and resource_group_name must be provided."
   }
   description = "The custom domain for the app service."
