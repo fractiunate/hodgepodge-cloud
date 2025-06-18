@@ -57,7 +57,6 @@ resource "helm_release" "istio_ingress" {
   depends_on = [helm_release.istiod]
 }
 
-
 resource "helm_release" "istio_gateway" {
   name            = "default-gateway"
   chart           = "../../../helm/charts/itscontained/raw"
