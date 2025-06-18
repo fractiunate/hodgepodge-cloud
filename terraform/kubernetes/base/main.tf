@@ -25,7 +25,7 @@ resource "azurerm_user_assigned_identity" "aks_workload_identity" {
 
 
 resource "azurerm_role_assignment" "dns" {
-  count                = var.workload_identity_enabled ? 1 : 0
+  count                = try(var.custom_domain.domain_name, null) != null && var.workload_identity_enabled ? 1 : 0
   scope                = try(var.custom_domain.resource_group_name, null) == null ? azurerm_resource_group.this.id : data.azurerm_resource_group.dns[0].id
   role_definition_name = "DNS Zone Contributor"
   principal_id         = azurerm_user_assigned_identity.aks_workload_identity[0].principal_id
