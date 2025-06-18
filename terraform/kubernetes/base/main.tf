@@ -11,8 +11,9 @@ resource "azurerm_resource_group" "this" {
 }
 
 data "azurerm_resource_group" "dns" {
-  count = try(var.custom_domain.resource_group_name, null) != null ? 1 : 0
-  name  = var.custom_domain.resource_group_name
+  provider = azurerm.dns
+  count    = try(var.custom_domain.resource_group_name, null) != null ? 1 : 0
+  name     = var.custom_domain.resource_group_name
 }
 
 resource "azurerm_user_assigned_identity" "aks_workload_identity" {
