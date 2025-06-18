@@ -19,7 +19,7 @@ serviceAccount:
   labels:
     azure.workload.identity/use: "true"
 crds:
-  create: true
+  enabled: true
   keep: true
 EOF
   ]
