@@ -38,3 +38,9 @@ variable "cert_manager_federated_identity_client_id" {
   type        = string
   nullable    = false
 }
+
+variable "letsencypt_production" {
+  description = "Flag to indicate if Let's Encrypt production should be used."
+  type        = bool
+  default     = false
+}

@@ -37,14 +37,14 @@ resources:
 - apiVersion: cert-manager.io/v1
   kind: ClusterIssuer
   metadata:
-    name: letsencrypt-staging
+    name: letsencrypt-${var.letsencypt_production ? "production" : "staging"}
   spec:
     acme:
-      server: https://acme-staging-v02.api.letsencrypt.org/directory
+      server: https://acme-${var.letsencypt_production ? "" : "staging-"}v02.api.letsencrypt.org/directory
       email: "hostmaster@${var.custom_domain.domain_name}"
       profile: tlsserver
       privateKeySecretRef:
-        name: letsencrypt-staging
+        name: letsencrypt-${var.letsencypt_production ? "production" : "staging"}
       solvers:
       - dns01:
           azureDNS:
