@@ -33,26 +33,27 @@ resource "helm_release" "letsencrypt_clusterissuer_federated_identity" {
   namespace       = kubernetes_namespace.certificates.metadata[0].name
 
   values = [<<EOF
-apiVersion: cert-manager.io/v1
-kind: ClusterIssuer
-metadata:
-  name: letsencrypt-staging
-spec:
-  acme:
-    server: https://acme-staging-v02.api.letsencrypt.org/directory
-    email: "hostmaster@${var.custom_domain.domain_name}"
-    profile: tlsserver
-    privateKeySecretRef:
+resources:
+- apiVersion: cert-manager.io/v1
+  kind: ClusterIssuer
+    metadata:
       name: letsencrypt-staging
-    solvers:
-    - dns01:
-        azureDNS:
-          resourceGroupName: ${var.custom_domain.resource_group_name}
-          subscriptionID: ${var.custom_domain.dns_subscription_id}
-          hostedZoneName: ${var.custom_domain.domain_name}
-          environment: AzurePublicCloud
-          managedIdentity:
-            clientID: ${var.cert_manager_federated_identity_client_id}
+    spec:
+      acme:
+        server: https://acme-staging-v02.api.letsencrypt.org/directory
+        email: "hostmaster@${var.custom_domain.domain_name}"
+        profile: tlsserver
+        privateKeySecretRef:
+          name: letsencrypt-staging
+        solvers:
+        - dns01:
+            azureDNS:
+              resourceGroupName: ${var.custom_domain.resource_group_name}
+              subscriptionID: ${var.custom_domain.dns_subscription_id}
+              hostedZoneName: ${var.custom_domain.domain_name}
+              environment: AzurePublicCloud
+              managedIdentity:
+                clientID: ${var.cert_manager_federated_identity_client_id}
 EOF
   ]
   depends_on = [helm_release.istio_ingress]
