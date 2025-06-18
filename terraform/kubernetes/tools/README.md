@@ -11,7 +11,9 @@ echo "b64_cluster_host=$(cat $kubeconfig | yq '.clusters[]|select(.name == "dev-
 echo "b64_cluster_ca_certificate=$(cat $kubeconfig | yq '.clusters[]|select(.name == "dev-aks-gitops-ijbv").cluster.certificate-authority-data')" >> tmp/credentials
 echo "b64_client_certificate=$(cat $kubeconfig | yq '.users[]|select(.name == "clusterAdmin_dev-fractiunate-aks-rg_dev-aks-gitops-ijbv").user.client-certificate-data')" >> tmp/credentials
 echo "b64_client_key=$(cat $kubeconfig | yq '.users[]|select(.name == "clusterAdmin_dev-fractiunate-aks-rg_dev-aks-gitops-ijbv").user.client-key-data')" >> tmp/credentials
-
-
-
 ```
+
+
+##  Cert-Manager
+
+Setup workload identity and issue a dns challenge certificate, read more: https://cert-manager.io/docs/tutorials/getting-started-aks-letsencrypt/#reconfigure-the-cluster
