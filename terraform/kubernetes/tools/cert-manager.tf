@@ -58,3 +58,32 @@ EOF
   ]
   depends_on = [helm_release.istio_ingress]
 }
+
+resource "helm_release" "letsencrypt_istio_certificate" {
+  count           = var.custom_domain != null ? 1 : 0
+  name            = "letsencrypt-istio-cert"
+  chart           = "../../../helm/charts/itscontained/raw"
+  namespace       = kubernetes_namespace.istio_system.metadata[0].name
+  cleanup_on_fail = true
+
+  values = [<<EOF
+resources:
+- apiVersion: cert-manager.io/v1
+  kind: Certificate
+  metadata:
+    name: ${var.custom_domain.domain_name}-tls
+    namespace: ${kubernetes_namespace.istio_system.metadata[0].name}
+  spec:
+    secretName: ${var.custom_domain.domain_name}-tls
+    duration: 2160h # 90d
+    renewBefore: 360h # 15d
+    commonName: ${var.custom_domain.domain_name}
+    dnsNames:
+      - ${var.custom_domain.domain_name}
+    issuerRef:
+      name: letsencrypt-${var.letsencypt_production ? "production" : "staging"}
+      kind: ClusterIssuer
+EOF
+  ]
+  depends_on = [helm_release.letsencrypt_clusterissuer_federated_identity]
+}

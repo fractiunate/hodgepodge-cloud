@@ -80,22 +80,18 @@ resources:
         protocol: HTTP
       hosts:
       - "*.dev.fractiunate.me"
+      tls:
+        httpsRedirect: true
+    - port:
+        number: 443
+        name: https-443
+        protocol: HTTPS
+      hosts:
+      - "*.dev.fractiunate.me"
+      tls:
+        mode: SIMPLE
+        credentialName: ${var.custom_domain.domain_name}-tls
 EOF
   ]
   depends_on = [helm_release.istio_ingress]
 }
-
-
-#     tls:
-#       httpsRedirect: true # sends 301 redirect for http requests
-#   - port:
-#       number: 443
-#       name: https-443
-#       protocol: HTTPS
-#     hosts:
-#     - uk.bookinfo.com
-#     - eu.bookinfo.com
-#     tls:
-#       mode: SIMPLE
-#       serverCertificate: /etc/certs/servercert.pem
-#       privateKey: /etc/certs/privatekey.pem
