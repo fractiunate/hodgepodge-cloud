@@ -18,3 +18,5 @@ echo "b64_client_key=$(cat $kubeconfig | yq '.users[]|select(.name == "clusterAd
 ##  Cert-Manager
 
 Setup workload identity and issue a dns challenge certificate, read more: https://cert-manager.io/docs/tutorials/getting-started-aks-letsencrypt/#reconfigure-the-cluster
+
+Set `CERT_MANAGER_FEDERATED_IDENTITY_CLIENT_ID ` in github environment after re-deployed base infra.
