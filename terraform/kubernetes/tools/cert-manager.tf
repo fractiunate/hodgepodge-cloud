@@ -77,9 +77,9 @@ resources:
     secretName: ${var.custom_domain.domain_name}-tls
     duration: 2160h # 90d
     renewBefore: 360h # 15d
-    commonName: ${var.custom_domain.domain_name}
+    commonName: "*.${var.custom_domain.domain_name}"
     dnsNames:
-      - ${var.custom_domain.domain_name}
+      - "*.${var.custom_domain.domain_name}"
     issuerRef:
       name: letsencrypt-${var.letsencypt_production ? "production" : "staging"}
       kind: ClusterIssuer
