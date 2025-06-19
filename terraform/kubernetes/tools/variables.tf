@@ -19,8 +19,7 @@ variable "b64_cluster_ca_certificate" {
 }
 
 variable "custom_domain" {
-  nullable = true
-  default  = null
+  nullable = false
   type = object({
     domain_name         = string
     dns_subscription_id = optional(string, null)
@@ -43,4 +42,10 @@ variable "letsencypt_production" {
   description = "Flag to indicate if Let's Encrypt production should be used."
   type        = bool
   default     = false
+}
+
+variable "tls_redirect" {
+  description = "Flag to indicate if TLS redirect should be enabled."
+  type        = bool
+  default     = true
 }

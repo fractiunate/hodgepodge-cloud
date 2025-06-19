@@ -20,3 +20,7 @@ echo "b64_client_key=$(cat $kubeconfig | yq '.users[]|select(.name == "clusterAd
 Setup workload identity and issue a dns challenge certificate, read more: https://cert-manager.io/docs/tutorials/getting-started-aks-letsencrypt/#reconfigure-the-cluster
 
 Set `CERT_MANAGER_FEDERATED_IDENTITY_CLIENT_ID ` in github environment after re-deployed base infra.
+
+## Ory Identity & Gatekeeper (WIP)
+
+REF:  [Istio setup and best practices](https://github.com/ory/oathkeeper/issues/624)

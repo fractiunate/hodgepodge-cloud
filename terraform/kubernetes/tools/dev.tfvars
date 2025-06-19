@@ -4,3 +4,4 @@ custom_domain = {
   dns_subscription_id = "f4ecd666-a977-4473-9512-5f77b64ea5c5"
 }
 letsencypt_production = true
+tls_redirect = false

@@ -80,8 +80,10 @@ resources:
         protocol: HTTP
       hosts:
       - "*.dev.fractiunate.me"
+      %{if var.tls_redirect}
       tls:
         httpsRedirect: true
+      %{endif}
     - port:
         number: 443
         name: https-443
